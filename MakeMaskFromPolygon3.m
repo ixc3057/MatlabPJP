@@ -4,7 +4,7 @@ clear, clc, close all, format compact
 % Patient number
 patient_number = 5;
 % Fraction numbers to compare to each other
-fraction_number = 1;
+fraction_number = 4;
 % Number of slices above and below PTV to truncate
 num_slices_PTV = 5;
 
@@ -16,7 +16,7 @@ ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 
 epsilon = 1e-3;
 
-indir = ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+indir = ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 
 %% Load MRI file
 [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);
@@ -107,7 +107,8 @@ set(h,'Position', [57 524 1185 378])
                           [0:ImgSize(1)-1]*PixelSpacing(2)+ImagePositionPatient(2));
 % xgrid = xgrid';
 % ygrid = ygrid';
-contourmask = zeros([size(I),length(uniquezcoors)]);
+contourmask = zeros(size(I));
+contourmask_non_conc = zeros([ImgSize length(tmpidx)]); %Non concatenated mask
 
 % Create volumetric mask for this organ
 for i = tmpidx
@@ -144,7 +145,7 @@ for i = tmpidx
     
     figure(2)
     subplot(1,2,1)
-    imagesc(I(:,:,sliceidx))
+    imagesc(I(:,:,sliceidx), [10 300])
     axis equal
     colormap(gray)
     hold on;plot(contourPoints(:,1),contourPoints(:,2));
@@ -155,6 +156,10 @@ for i = tmpidx
     colormap(gray)
     hold on;plot(contourPoints(:,1),contourPoints(:,2));
     hold off
+    pause(0.1)
+    
+    % Place the mask slice in noncocatenated file
+    contourmask_non_conc(:,:,i) = insideContour;
     
     % Concatenate the result to the contourmask using the OR function
     contourmask(:,:,sliceidx) = contourmask(:,:,sliceidx) | insideContour;
@@ -163,17 +168,27 @@ for i = tmpidx
     %     imagesc(squeeze(contourmask(:,:,i))); title(['Z=', num2str(zcoors(i)), 'mm, Slice: ', num2str(sliceidx)]);
     %     colormap(gray);
     %     pause;
-end 
-
-%% Assume that Z-coordinate of slice = sliceidx * SliceThickness - ImagePosition(3)
-for i = 1:size(contourmask,3)
-    figure(gcf);
-    subplot(1,2,1);
-    imagesc(squeeze(contourmask(:,:,i))); title(['Slice: ', num2str(i)]); axis equal; 
-    subplot(1,2,2);
-    sliceidx = NumSlices-round((ImagePositionPatient(3)-uniquezcoors(i))/SliceThickness);
-    imagesc(double(squeeze(I(:,:,sliceidx))).*squeeze(contourmask(:,:,i))*30+...
-            double(squeeze(I(:,:,sliceidx))).*squeeze(~contourmask(:,:,i))*10); title(['Slice: ', num2str(sliceidx)]); axis equal;
-    colormap(gray);
-    pause;
 end
+
+
+% Display entire image w points and mask to verify
+for i = 1:size(I,3)
+    figure(3)
+    imagesc(contourmask(:,:,i), [0 1])
+    title(['Slice #', num2str(i)])
+    colormap(gray)
+    pause(0.05)
+end
+
+% %% Assume that Z-coordinate of slice = sliceidx * SliceThickness - ImagePosition(3)
+% for i = 1:size(contourmask,3)
+%     figure(gcf);
+%     subplot(1,2,1);
+%     imagesc(squeeze(contourmask(:,:,i))); title(['Slice: ', num2str(i)]); axis equal; 
+%     subplot(1,2,2);
+%     sliceidx = NumSlices-round((ImagePositionPatient(3)-uniquezcoors(i))/SliceThickness);
+%     imagesc(double(squeeze(I(:,:,sliceidx))).*squeeze(contourmask(:,:,i))*30+...
+%             double(squeeze(I(:,:,sliceidx))).*squeeze(~contourmask(:,:,i))*10); title(['Slice: ', num2str(sliceidx)]); axis equal;
+%     colormap(gray);
+%     pause;
+% end
