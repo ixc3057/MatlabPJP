@@ -77,14 +77,23 @@ for ii = 40:100
 end
 
 figure(2)
-for ii = 1:size(I,3)
+% for ii = 1:size(I,3)
+for ii = 40:100
     title(['Slice #', num2str(ii)])
-    imagesc(Dmap(:,:,ii), [0 100])
+    imagesc(Dmap(:,:,ii), [0 50])
     colormap(jet)
     axis equal
     title(['Slice #', num2str(ii)])
     colorbar
-    pause(0.1)
+    pause(0.01)
     
 end
 
+DmapFlat = Dmap(:);
+DmaphistInd = find(DmapFlat>3);
+Dmaphist = DmapFlat(DmaphistInd);
+figure(3)
+bar(hist(Dmaphist,[3:3:60]) ./ sum(hist(Dmaphist,[3:3:60]))*100)
+xlabel('Distance (mm)')
+ylabel('% Pixels')
+title('Patient #5, Duodenum')
