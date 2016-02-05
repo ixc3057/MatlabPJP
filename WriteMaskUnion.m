@@ -20,7 +20,7 @@ epsilon = 1e-3;
 indir = ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 
-fnameout =  ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number), '\', ROI_name_full, '_mask.raw'];
+fnameout =  ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
 
 %% Load MRI file
 [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);

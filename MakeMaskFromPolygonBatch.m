@@ -21,8 +21,9 @@ for ii = 1:fxnums
     
     fraction_number = ii;
     
-    indir = ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+    indir = ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
     ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
+    %     ROI_name_full = ROI_name;
     
     %% Load MRI file
     [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);
@@ -119,7 +120,7 @@ for ii = 1:fxnums
     contourmask = uint8(contourmask);
     
     %% Write the file
-    fnameout =  ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number), '\', ROI_name_full, '_mask.raw'];
+    fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
     fid = fopen(fnameout,'w');
     cnt=fwrite(fid,contourmask,'uint8');
     fclose(fid);
@@ -135,3 +136,22 @@ end
 % prod(size(contourmaskread))
 % prod(size(contourmask))
 % prod(size(contourmaskread))/prod(size(contourmask))
+
+% %% Create and save distance map
+% % Create distance map
+% aspectRatio = [PixelSpacing; SliceThickness]';
+% Dmap = bwdistsc(contourmask, aspectRatio);
+% % Save distance map
+% fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_Dmap.raw'];
+% fid = fopen(fnameout,'w');
+% cnt=fwrite(fid,Dmap,'double');
+% fclose(fid);
+% 
+% % Re-read the distance map as check
+% fid = fopen(fnameout,'r');
+% Dmapread = fread(fid,'double');
+% Dmapread = reshape(Dmapread, size(I));
+% fclose(fid);
+% prod(size(Dmap))
+% prod(size(Dmapread))
+% prod(size(Dmapread))/prod(size(Dmap))

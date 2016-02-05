@@ -4,7 +4,7 @@ clear, clc, close all, format compact
 % Patient number
 patient_number = 5;
 % Fraction numbers to compare to each other
-fraction_number = 4;
+fraction_number = 2;
 % Number of slices above and below PTV to truncate
 num_slices_PTV = 5;
 
@@ -16,7 +16,7 @@ ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 
 epsilon = 1e-3;
 
-indir = ['C:\Users\Ishita\Documents\MATLAB\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+indir = ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 
 %% Load MRI file
 [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);
@@ -143,20 +143,23 @@ for i = tmpidx
     contourPoints(:,1)=round((tempContour(1,:)-I_x_or*ImageOrientationPatient(1))/PixelSpacing(1))+1;
     contourPoints(:,2)=round((tempContour(2,:)-I_y_or*ImageOrientationPatient(5))/PixelSpacing(2))+1;
     
-    figure(2)
+    h = figure(2);
     subplot(1,2,1)
     imagesc(I(:,:,sliceidx), [10 300])
     axis equal
     colormap(gray)
     hold on;plot(contourPoints(:,1),contourPoints(:,2));
+    axis tight
     hold off
     subplot(1,2,2)
     imagesc(insideContour)
     axis equal
     colormap(gray)
     hold on;plot(contourPoints(:,1),contourPoints(:,2));
+    axis tight
     hold off
-    pause(0.1)
+    set(h,'Position',[64 239 1130 681]);
+    pause(0.01)
     
     % Place the mask slice in noncocatenated file
     contourmask_non_conc(:,:,i) = insideContour;
