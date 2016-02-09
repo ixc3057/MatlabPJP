@@ -2,7 +2,7 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 5;
+patient_number = 1;
 % Fraction numbers to compare to each other
 fraction_number = 1;
 fxnums = 25;
@@ -10,14 +10,16 @@ fxnums = 25;
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'LARGEBOWEL';
+ROI_name = 'STOMACH';
 
 %ROI_name = 'Skin';
 %ROI_name_full = ROI_name;
 
 epsilon = 1e-3;
 
-indir = ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+base_dir = 'C:\Users\Ishita\Documents\data\Patient_0';
+
+indir = [base_dir, num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 
 %% Load MRI file for first fraction
@@ -32,28 +34,28 @@ I_y_or = ImagePositionPatient(1,2);     % y origin of the image
 ImagePositionPatient = ImagePositionPatient(end,:);
 
 % Load binary mask for first fraction
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask1 = fread(fid,'uint8');
 contourmask1 = reshape(contourmask1, size(I));
 fclose(fid);
 
 % Load distance map for first fraction
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_Dmap.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name_full, '_Dmap.raw'];
 fid = fopen(fnameout,'r');
 Dmap_Fx1 = fread(fid,'double');
 Dmap_Fx1 = reshape(Dmap_Fx1, size(I));
 fclose(fid);
 
 % Load the mask for PTV
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\PTV_mask.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\PTV_mask.raw'];
 fid = fopen(fnameout,'r');
 PTV_mask = fread(fid,'uint8');
 PTV_mask = reshape(PTV_mask, size(I));
 fclose(fid);
 
 % Load distance map for PTV
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\PTV_Dmap.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\PTV_Dmap.raw'];
 fid = fopen(fnameout,'r');
 Dmap_PTV = fread(fid,'double');
 Dmap_PTV = reshape(Dmap_PTV, size(I));
@@ -67,7 +69,7 @@ for iter = 2:fxnums
     ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
     
     % Load new fraction
-    fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
+    fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name_full, '_mask.raw'];
     fid = fopen(fnameout,'r');
     contourmask2 = fread(fid,'uint8');
     contourmask2 = reshape(contourmask2, size(I));
@@ -155,13 +157,13 @@ for iter = 2:fxnums
 end
 
 % Write the concatenated distance maps
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name, '_Fx1_Dmap_linear_array.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name, '_Fx1_Dmap_linear_array.raw'];
 fid = fopen(fnameout,'w');
 cnt=fwrite(fid,Dmap_Fx1_contour,'double');
 fclose(fid);
 
 
-fnameout =  ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number), '\Analysis\', ROI_name, '_PTV_Dmap_linear_array.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name, '_PTV_Dmap_linear_array.raw'];
 fid = fopen(fnameout,'w');
 cnt=fwrite(fid,Dmap_PTV_contour,'double');
 fclose(fid);
