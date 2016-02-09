@@ -2,15 +2,16 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 5;
+patient_number = 2;
 % Fraction numbers to compare to each other
-fraction_number = 1;
+fraction_number_init = 2;
+fraction_number = fraction_number_init;
 fxnums = 25;
 % Number of slices above and below PTV to truncate
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'DUODENUM';
+ROI_name = 'LARGEBOWEL';
 
 %ROI_name = 'Skin';
 %ROI_name_full = ROI_name;
@@ -21,22 +22,23 @@ fixed_distance = 20;
 vinterval = [0:3:120];
 vint_graph = 0:length(vinterval)-1;
 
-base_dir = 'C:\Users\Ishita\Documents\data\Patient_0';
+base_dir = 'C:\Users\ichen\Documents\data-anon-matlab\Patient_0';
+results_dir = 'Analysis2';
 
 % Read fraction distance map
-fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name, '_Fx1_Dmap_linear_array.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_Fx1_Dmap_linear_array.raw'];
 fid = fopen(fnameout,'r');
 Dmap_Fx1_contour=fread(fid,'double');
 fclose(fid);
 
 
-fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name, '_PTV_Dmap_linear_array.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_PTV_Dmap_linear_array.raw'];
 fid = fopen(fnameout,'r');
 Dmap_PTV_contour=fread(fid,'double');
 fclose(fid);
 
 % Read union distance map
-fnameout =  [base_dir, num2str(patient_number), '\Analysis\', ROI_name, '_Fx1_union_Dmap_linear_array.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_Fx1_union_Dmap_linear_array.raw'];
 fid = fopen(fnameout,'r');
 Dmap_Fx1_union=fread(fid,'double');
 fclose(fid);
@@ -59,8 +61,8 @@ title(['Cumulative Histogram (union), Patient #', num2str(patient_number), ', RO
 axis tight
 
 disp('Union histogram')
-ind = find(cum_Fx1_union_hist < 90, 1, 'last' );
-disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
+% ind = find(cum_Fx1_union_hist < 90, 1, 'last' );
+% disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
 ind = find(cum_Fx1_union_hist < 95, 1, 'last' );
 disp(['Distance covering 95% motion: ', num2str(vinterval(ind)/10), ' cm'])
 
@@ -83,15 +85,15 @@ title(['Cumulative Histogram, Patient #', num2str(patient_number), ', ROI: ', RO
 axis tight
 
 disp('Concatenated histogram')
-ind = find(cum_Fx1_hist < 90, 1, 'last' );
-disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
+% ind = find(cum_Fx1_hist < 90, 1, 'last' );
+% disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
 ind = find(cum_Fx1_hist < 95, 1, 'last' );
 disp(['Distance covering 95% motion: ', num2str(vinterval(ind)/10), ' cm'])
 
 ind = find(Dmap_PTV_contour<epsilon);
 Dmap_PTV_contour(ind) = epsilon;
-PTV_weights = 1./(Dmap_PTV_contour).^2;
-PTV_weights = PTV_weights./sum(PTV_weights);
+PTV_weights_tmp = 1./(Dmap_PTV_contour).^2;
+PTV_weights = PTV_weights_tmp./sum(PTV_weights_tmp);
 
 % Weighted histogram
 histw = histwc_int(Dmap_Fx1_contour, PTV_weights, vinterval);
@@ -113,8 +115,8 @@ title(['Cumulative Weighted Histogram, Patient #', num2str(patient_number), ', R
 axis tight
 
 disp('Weighted histogram')
-ind = find(cum_Fx1_hist_weight < 90, 1, 'last' );
-disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
+% ind = find(cum_Fx1_hist_weight < 90, 1, 'last' );
+% disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
 ind = find(cum_Fx1_hist_weight < 95, 1, 'last' );
 disp(['Distance covering 95% motion: ', num2str(vinterval(ind)/10), ' cm'])
 
@@ -140,8 +142,8 @@ title(['Cumulative Histogram w-i ', num2str(fixed_distance/10), ' cm of PTV, Pat
 axis tight
 
 disp(['w-i ', num2str(fixed_distance/10), ' cm of PTV: '])
-ind = find(cum_Fx1_hist_fix_dist < 90, 1, 'last' );
-disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
+% ind = find(cum_Fx1_hist_fix_dist < 90, 1, 'last' );
+% disp(['Distance covering 90% motion: ', num2str(vinterval(ind)/10), ' cm'])
 ind = find(cum_Fx1_hist_fix_dist < 95, 1, 'last' );
 disp(['Distance covering 95% motion: ', num2str(vinterval(ind)/10), ' cm'])
 
