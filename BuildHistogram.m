@@ -10,7 +10,7 @@ fxnums = 25;
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'STOMACH';
+ROI_name = 'DUODENUM';
 
 %ROI_name = 'Skin';
 %ROI_name_full = ROI_name;
