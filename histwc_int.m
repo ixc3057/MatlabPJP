@@ -4,16 +4,16 @@
 % histogram. Equal number of bins will be considered using minimum and 
 % maximum values of the data. Weights will be summed in the given bin.
 %
-% Usage: [histw, vinterval] = histwc(vv, ww, nbins)
+% Usage: [histw] = histwc_int(vv, ww, vinterval)
 %
 % Arguments:
 %       vv    - values as a vector
 %       ww    - weights as a vector
-%       nbins - number of bins
+%       vinterval - intervals used
 %
 % Returns:
 %       histw     - weighted histogram
-%       vinterval - intervals used
+%       
 %       
 %
 %

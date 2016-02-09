@@ -12,13 +12,13 @@ patient_number = 3;
 % Fraction numbers to compare to each other
 fraction_number_N = 25;
 
-roi_of_interest = 'PTV';
+roi_of_interest = 'PTV_4500';
 
 roi_name_int = {};
 
 for fraction_number_1 = 1:fraction_number_N
     disp(fraction_number_1)
-    indir1 = ['C:\Users\ichen\Documents\anon_data\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number_1),'_Delivery']
+    indir1 = ['C:\Users\Ishita\Documents\data\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number_1),'_Delivery']
     
     dd=dir([indir1 '\RTS*.dcm']);
     file_in = ([indir1 '\' dd.name]);
@@ -52,7 +52,7 @@ for fraction_number_1 = 1:fraction_number_N
     disp(roi_name_int)
     disp(PTV_item_no)
     
-    %     PTV_info = dinfo;
-    %     PTV_info.StructureSetROISequence.Item_15.ROIName = 'PTV';
-    %     dicomanon(file_in, file_out, 'update', PTV_info);
+    PTV_info = dinfo;
+    PTV_info.StructureSetROISequence.Item_15.ROIName = 'PTV';
+    dicomanon(file_in, file_out, 'update', PTV_info);
 end
