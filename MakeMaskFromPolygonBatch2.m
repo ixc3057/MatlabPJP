@@ -8,7 +8,7 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 1;
+patient_number = 5;
 % Starting fraction number
 fraction_number_init = 2;
 fraction_number = fraction_number_init;
@@ -18,7 +18,7 @@ fxnums = 25;
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'LARGEBOWEL';
+ROI_name = 'SMALLBOWEL';
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 %ROI_name_full = ROI_name;
 

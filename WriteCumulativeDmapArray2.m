@@ -11,7 +11,7 @@ fxnums = 25;
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'LARGEBOWEL';
+ROI_name = 'SMALLBOWEL';
 
 % Precision error
 epsilon = 1e-4;
