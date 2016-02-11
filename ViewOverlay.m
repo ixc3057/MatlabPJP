@@ -79,13 +79,13 @@ fclose(fid);
 
 %% Display
 h=figure(1)
-% set(h,'Position',[12         422        1249         942])
-set(h,'Position',[151   181   939   731])
+set(h,'Position',[12         422        1249         942])
+% set(h,'Position',[151   181   939   731])
 for iter = 40:80
     
     % Display image slice
     figure(1);
-    %     subplot(2,2,1)
+    subplot(2,2,1)
     imagesc(I(:,:,iter), [10 350])
     axis equal; axis tight; axis off
     colormap(gray)
@@ -132,56 +132,56 @@ for iter = 40:80
     end
 
     hold off
-    %     freezeColors
-    %
-    %     %% Display distance map
-    %     subplot(2,2,2)
-    %     imagesc(Dmap_Fx1(:,:,iter),[0 70])
-    %     axis equal; axis tight; axis off
-    %     colormap(jet)
-    %     hold on
-    %     % Display baseline boundary
-    %     if ~isempty(BoundaryPoints1)
-    %         plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'k.','LineWidth',1,'MarkerSize',5)
-    %     end
-    %     % Display 2nd Fx
-    %     if ~isempty(BoundaryPoints2)
-    %         plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'k.','LineWidth',1,'MarkerSize',1)
-    %     end
-    %     % Display PTV
-    %     if ~isempty(BoundaryPointsPTV)
-    %         plot(BoundaryPointsPTV(1:3:end,2),BoundaryPointsPTV(1:3:end,1),'k*','LineWidth',1,'MarkerSize',2)
-    %     end
-    %     title('Distance map (mm)','FontSize',20)
-    %     colorbar('FontSize',16)
-    %     hold off
-    %     freezeColors
-    %
-    %     subplot(2,2,3)
-    %     imagesc(contourmask1(:,:,iter),[0 1])
-    %     axis equal; axis tight; axis off
-    %     colormap(gray)
-    %     title(['Fx #1 binary'],'FontSize',20)
-    %     freezeColors
-    %
-    %     subplot(2,2,4)
-    %     %     imagesc(contourmask2(:,:,iter),[0 1])
-    %     imagesc(Dmap_Fx1(:,:,iter).*union_sub(:,:,iter),[0 10])
-    %     axis equal; axis tight; axis off
-    %     colormap(jet)
-    %     title(['Fx #2 binary'],'FontSize',20)
-    %     colorbar('FontSize',16)
-    %     truesize(h,[310 360]*.9)
-    %     hold on
-    %     % Display baseline boundary
-    %     if ~isempty(BoundaryPoints1)
-    %         plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'w.','LineWidth',1,'MarkerSize',1)
-    %     end
-    %     % Display 2nd Fx
-    %     if ~isempty(BoundaryPoints2)
-    %         plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'w.','LineWidth',1,'MarkerSize',1)
-    %     end
-    %     hold off
+    freezeColors
+    
+    %% Display distance map
+    subplot(2,2,2)
+    imagesc(Dmap_Fx1(:,:,iter),[0 70])
+    axis equal; axis tight; axis off
+    colormap(jet)
+    hold on
+    % Display baseline boundary
+    if ~isempty(BoundaryPoints1)
+        plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'k.','LineWidth',1,'MarkerSize',5)
+    end
+    % Display 2nd Fx
+    if ~isempty(BoundaryPoints2)
+        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'k.','LineWidth',1,'MarkerSize',1)
+    end
+    % Display PTV
+    if ~isempty(BoundaryPointsPTV)
+        plot(BoundaryPointsPTV(1:3:end,2),BoundaryPointsPTV(1:3:end,1),'k*','LineWidth',1,'MarkerSize',2)
+    end
+    title('Distance map (mm)','FontSize',20)
+    colorbar('FontSize',16)
+    hold off
+    freezeColors
+    
+    subplot(2,2,3)
+    imagesc(contourmask1(:,:,iter),[0 1])
+    axis equal; axis tight; axis off
+    colormap(gray)
+    title(['Fx #1 binary'],'FontSize',20)
+    freezeColors
+    
+    subplot(2,2,4)
+    %     imagesc(contourmask2(:,:,iter),[0 1])
+    imagesc(Dmap_Fx1(:,:,iter).*union_sub(:,:,iter),[0 10])
+    axis equal; axis tight; axis off
+    colormap(jet)
+    title(['Fx #2 binary'],'FontSize',20)
+    colorbar('FontSize',16)
+    truesize(h,[310 360]*.9)
+    hold on
+    % Display baseline boundary
+    if ~isempty(BoundaryPoints1)
+        plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'w.','LineWidth',1,'MarkerSize',1)
+    end
+    % Display 2nd Fx
+    if ~isempty(BoundaryPoints2)
+        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'w.','LineWidth',1,'MarkerSize',1)
+    end
+    hold off
     %     pause(0.1)
     pause
 end
