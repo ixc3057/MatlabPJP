@@ -49,13 +49,37 @@ contourmask1 = reshape(contourmask1, size(I));
 contourmask1 = flipdim(contourmask1,3);
 fclose(fid);
 
-% Load binary of another fx
-% fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_mask_union.raw'];
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full2, '_mask.raw'];
+% Structure of interest
+ROI_name = 'DUODENUM';
+ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
+% Load first binary for first fx
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask2 = fread(fid,'uint8');
 contourmask2 = reshape(contourmask2, size(I));
 contourmask2 = flipdim(contourmask2,3);
+fclose(fid);
+
+% Structure of interest
+ROI_name = 'SMALLBOWEL';
+ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
+% Load first binary for first fx
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fid = fopen(fnameout,'r');
+contourmask3 = fread(fid,'uint8');
+contourmask3 = reshape(contourmask3, size(I));
+contourmask3 = flipdim(contourmask3,3);
+fclose(fid);
+
+% Structure of interest
+ROI_name = 'LARGEBOWEL';
+ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
+% Load first binary for first fx
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fid = fopen(fnameout,'r');
+contourmask4 = fread(fid,'uint8');
+contourmask4 = reshape(contourmask4, size(I));
+contourmask4 = flipdim(contourmask4,3);
 fclose(fid);
 
 % Load binary of PTV
@@ -66,28 +90,19 @@ PTV_mask = reshape(PTV_mask, size(I));
 PTV_mask = flipdim(PTV_mask,3);
 fclose(fid);
 
-%% Load distance map for baseline Fx
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_Dmap.raw'];
-fid = fopen(fnameout,'r');
-Dmap_Fx1 = fread(fid,'double');
-Dmap_Fx1 = reshape(Dmap_Fx1, size(I));
-Dmap_Fx1 = flipdim(Dmap_Fx1,3);
-fclose(fid);
-
 %% Display
 h=figure(1)
-for iter = 65:78
-    
+for iter = 1:144
+        
     % Display image slice
     figure(1);
-    subplot(1,2,1)
-    imagesc(I(:,:,iter), [10 350])
+    imagesc(I(:,:,iter), [10 300])
     axis equal; axis tight; axis off
     colormap(gray)
     title(['Slice #', num2str(iter)],'FontSize',20)
     hold on
     
-    %% 1st fx
+    %% 1st fx, stomach
     % Get boundary for 1st fx binary
     BoundaryBW1 = bwboundaries(contourmask1(:,:,iter),'noholes');
     % Get points
@@ -98,6 +113,45 @@ for iter = 65:78
     % Display 1st fx
     if ~isempty(BoundaryPoints1)
         plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'b.','LineWidth',1,'MarkerSize',5)
+    end
+    
+    %% 1st fx, duodenum
+    % Get boundary for 1st fx binary
+    BoundaryBW2 = bwboundaries(contourmask2(:,:,iter),'noholes');
+    % Get points
+    BoundaryPoints2 = [];
+    for ii = 1:length(BoundaryBW2)
+        BoundaryPoints2 = [BoundaryPoints2; BoundaryBW2{ii}];
+    end
+    % Display 1st fx
+    if ~isempty(BoundaryPoints2)
+        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'r.','LineWidth',1,'MarkerSize',5)
+    end
+    
+    %% 1st fx, small intestine
+    % Get boundary for 1st fx binary
+    BoundaryBW3 = bwboundaries(contourmask3(:,:,iter),'noholes');
+    % Get points
+    BoundaryPoints3 = [];
+    for ii = 1:length(BoundaryBW3)
+        BoundaryPoints3 = [BoundaryPoints3; BoundaryBW3{ii}];
+    end
+    % Display 1st fx
+    if ~isempty(BoundaryPoints3)
+        plot(BoundaryPoints3(:,2),BoundaryPoints3(:,1),'y.','LineWidth',1,'MarkerSize',5)
+    end
+    
+    %% 1st fx, colon
+    % Get boundary for 1st fx binary
+    BoundaryBW4 = bwboundaries(contourmask4(:,:,iter),'noholes');
+    % Get points
+    BoundaryPoints4 = [];
+    for ii = 1:length(BoundaryBW4)
+        BoundaryPoints4 = [BoundaryPoints4; BoundaryBW4{ii}];
+    end
+    % Display 1st fx
+    if ~isempty(BoundaryPoints4)
+        plot(BoundaryPoints4(:,2),BoundaryPoints4(:,1),'m.','LineWidth',1,'MarkerSize',5)
     end
     
     %% PTV
@@ -113,46 +167,8 @@ for iter = 65:78
         plot(BoundaryPointsPTV(:,2),BoundaryPointsPTV(:,1),'g.','LineWidth',1,'MarkerSize',5)
     end
 
-    %% 2nd Fx
-    % Get boundary for 2nd fx binary
-    BoundaryBW2 = bwboundaries(contourmask2(:,:,iter),'noholes');
-    % Get points
-    BoundaryPoints2 = [];
-    for ii = 1:length(BoundaryBW2)
-        BoundaryPoints2 = [BoundaryPoints2; BoundaryBW2{ii}];
-    end
-    % Display 2nd fx
-    if ~isempty(BoundaryPoints2)
-        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'r.','LineWidth',1,'MarkerSize',5)
-    end
-
     hold off
-    freezeColors
-    
-    %% Display distance map
-    subplot(1,2,2)
-    imagesc(Dmap_Fx1(:,:,iter),[0 70])
-    axis equal; axis tight; axis off
-    colormap(jet)
-    hold on
-    % Display baseline boundary
-    if ~isempty(BoundaryPoints1)
-        plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'k.','LineWidth',1,'MarkerSize',5)
-    end
-    % Display 2nd Fx
-    if ~isempty(BoundaryPoints2)
-        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'k.','LineWidth',1,'MarkerSize',1)
-    end
-    % Display PTV
-    if ~isempty(BoundaryPointsPTV)
-        plot(BoundaryPointsPTV(1:3:end,2),BoundaryPointsPTV(1:3:end,1),'k*','LineWidth',1,'MarkerSize',2)
-    end
-    title('Distance map (mm)','FontSize',20)
-    colorbar('FontSize',16)
-    hold off
-    set(h,'Position',[12         422        1249         471])
-    truesize(h,[310 360]*.9)
+    set(h,'Position',[151   146   964   784])
     %     pause(0.1)
     pause
 end
-
