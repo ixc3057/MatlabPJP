@@ -3,11 +3,11 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 1;
+patient_number = 3;
 % Fraction numbers to compare to each other
 fraction_number_init = 1;
 fraction_number = fraction_number_init;
-fraction_number2 = 5;
+fraction_number2 = 2;
 fxnums = 25;
 
 % Number of slices above and below PTV to truncate
@@ -50,13 +50,16 @@ contourmask1 = flipdim(contourmask1,3);
 fclose(fid);
 
 % Load binary of another fx
-% fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_mask_union.raw'];
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full2, '_mask.raw'];
+fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name, '_mask_union.raw'];
+% fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full2, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask2 = fread(fid,'uint8');
 contourmask2 = reshape(contourmask2, size(I));
 contourmask2 = flipdim(contourmask2,3);
 fclose(fid);
+
+% Subtraction
+union_sub = and(~contourmask1, contourmask2);
 
 % Load binary of PTV
 fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', 'PTV_mask.raw'];
@@ -76,11 +79,13 @@ fclose(fid);
 
 %% Display
 h=figure(1)
-for iter = 65:78
+% set(h,'Position',[12         422        1249         942])
+set(h,'Position',[151   181   939   731])
+for iter = 40:80
     
     % Display image slice
     figure(1);
-    subplot(1,2,1)
+    %     subplot(2,2,1)
     imagesc(I(:,:,iter), [10 350])
     axis equal; axis tight; axis off
     colormap(gray)
@@ -127,31 +132,56 @@ for iter = 65:78
     end
 
     hold off
-    freezeColors
-    
-    %% Display distance map
-    subplot(1,2,2)
-    imagesc(Dmap_Fx1(:,:,iter),[0 70])
-    axis equal; axis tight; axis off
-    colormap(jet)
-    hold on
-    % Display baseline boundary
-    if ~isempty(BoundaryPoints1)
-        plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'k.','LineWidth',1,'MarkerSize',5)
-    end
-    % Display 2nd Fx
-    if ~isempty(BoundaryPoints2)
-        plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'k.','LineWidth',1,'MarkerSize',1)
-    end
-    % Display PTV
-    if ~isempty(BoundaryPointsPTV)
-        plot(BoundaryPointsPTV(1:3:end,2),BoundaryPointsPTV(1:3:end,1),'k*','LineWidth',1,'MarkerSize',2)
-    end
-    title('Distance map (mm)','FontSize',20)
-    colorbar('FontSize',16)
-    hold off
-    set(h,'Position',[12         422        1249         471])
-    truesize(h,[310 360]*.9)
+    %     freezeColors
+    %
+    %     %% Display distance map
+    %     subplot(2,2,2)
+    %     imagesc(Dmap_Fx1(:,:,iter),[0 70])
+    %     axis equal; axis tight; axis off
+    %     colormap(jet)
+    %     hold on
+    %     % Display baseline boundary
+    %     if ~isempty(BoundaryPoints1)
+    %         plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'k.','LineWidth',1,'MarkerSize',5)
+    %     end
+    %     % Display 2nd Fx
+    %     if ~isempty(BoundaryPoints2)
+    %         plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'k.','LineWidth',1,'MarkerSize',1)
+    %     end
+    %     % Display PTV
+    %     if ~isempty(BoundaryPointsPTV)
+    %         plot(BoundaryPointsPTV(1:3:end,2),BoundaryPointsPTV(1:3:end,1),'k*','LineWidth',1,'MarkerSize',2)
+    %     end
+    %     title('Distance map (mm)','FontSize',20)
+    %     colorbar('FontSize',16)
+    %     hold off
+    %     freezeColors
+    %
+    %     subplot(2,2,3)
+    %     imagesc(contourmask1(:,:,iter),[0 1])
+    %     axis equal; axis tight; axis off
+    %     colormap(gray)
+    %     title(['Fx #1 binary'],'FontSize',20)
+    %     freezeColors
+    %
+    %     subplot(2,2,4)
+    %     %     imagesc(contourmask2(:,:,iter),[0 1])
+    %     imagesc(Dmap_Fx1(:,:,iter).*union_sub(:,:,iter),[0 10])
+    %     axis equal; axis tight; axis off
+    %     colormap(jet)
+    %     title(['Fx #2 binary'],'FontSize',20)
+    %     colorbar('FontSize',16)
+    %     truesize(h,[310 360]*.9)
+    %     hold on
+    %     % Display baseline boundary
+    %     if ~isempty(BoundaryPoints1)
+    %         plot(BoundaryPoints1(:,2),BoundaryPoints1(:,1),'w.','LineWidth',1,'MarkerSize',1)
+    %     end
+    %     % Display 2nd Fx
+    %     if ~isempty(BoundaryPoints2)
+    %         plot(BoundaryPoints2(:,2),BoundaryPoints2(:,1),'w.','LineWidth',1,'MarkerSize',1)
+    %     end
+    %     hold off
     %     pause(0.1)
     pause
 end
