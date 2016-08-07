@@ -6,7 +6,7 @@ function [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientatio
 % (C) Ishita Chen, 1/25/2016
 
 % Read dicom file
-dd=dir([indir '\MR*.dcm']);
+dd=dir([indir '\MRI*.dcm']);
 pos=[];
 I=[];
 for i=1:length(dd)   

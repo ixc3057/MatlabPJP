@@ -12,12 +12,16 @@ clear, clc, close all, format compact
 %   'for ii' variable
 
 % Sets paths
-for ii=1:25  % change to number of files
-    indir = ['C:\Users\ichen\Documents\data\17150195\PANCREAS_SB_Fx',num2str(ii),'_Delivery\PlanningData'];
-    outdir = ['C:\Users\ichen\Documents\anon_data\Patient_05'];
+for ii=13:13  % change to number of files
+    disp(ii)
+    indir = ['C:\Users\ichen\Documents\data\12160058\ABDOMEN_SB_Fx',num2str(ii),'_Delivery\PlanningData'];
+    outdir = ['C:\Users\ichen\Documents\data_anon\Patient_10'];
     outdirname = ['Abdomen_SB_Fx',num2str(ii),'_Delivery'];
     % mkdir(outdir,outdirname);
     outdir = [outdir,'\',outdirname];
+    if ~exist(outdir,'dir')
+        mkdir(outdir)
+    end
     disp_message = ['Writing data to ',outdir];
     disp(disp_message)
     

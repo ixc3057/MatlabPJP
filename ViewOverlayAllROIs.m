@@ -3,12 +3,12 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 1;
+patient_number = 10;
 % Fraction numbers to compare to each other
 fraction_number_init = 1;
 fraction_number = fraction_number_init;
 fraction_number2 = 5;
-fxnums = 25;
+fxnums = 15;
 
 % Number of slices above and below PTV to truncate
 num_slices_PTV = 5;
@@ -20,11 +20,11 @@ ROI_name = 'STOMACH';
 epsilon = 1e-6;
 
 % File locations
-base_dir = 'C:\Users\ichen\Documents\data-anon-matlab\Patient_0';
+base_dir = 'C:\Users\ichen\Documents\data_anon\Patient_';
 results_dir = 'Analysis';
 
 % Names
-indir = [base_dir, num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+indir = [base_dir, sprintf('%02d',patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 ROI_name_full2 = [ROI_name, '_FX', num2str(fraction_number2)];
 
@@ -42,7 +42,7 @@ ImagePositionPatient = ImagePositionPatient(end,:);
 
 %% Load binaries
 % Load first binary for first fx
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fnameout =  [base_dir, sprintf('%02d',patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask1 = fread(fid,'uint8');
 contourmask1 = reshape(contourmask1, size(I));
@@ -53,7 +53,7 @@ fclose(fid);
 ROI_name = 'DUODENUM';
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 % Load first binary for first fx
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fnameout =  [base_dir, sprintf('%02d',patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask2 = fread(fid,'uint8');
 contourmask2 = reshape(contourmask2, size(I));
@@ -64,7 +64,7 @@ fclose(fid);
 ROI_name = 'SMALLBOWEL';
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 % Load first binary for first fx
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fnameout =  [base_dir, sprintf('%02d',patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask3 = fread(fid,'uint8');
 contourmask3 = reshape(contourmask3, size(I));
@@ -75,7 +75,7 @@ fclose(fid);
 ROI_name = 'LARGEBOWEL';
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 % Load first binary for first fx
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
+fnameout =  [base_dir, sprintf('%02d',patient_number), '\', results_dir,'\', ROI_name_full, '_mask.raw'];
 fid = fopen(fnameout,'r');
 contourmask4 = fread(fid,'uint8');
 contourmask4 = reshape(contourmask4, size(I));
@@ -83,7 +83,7 @@ contourmask4 = flipdim(contourmask4,3);
 fclose(fid);
 
 % Load binary of PTV
-fnameout =  [base_dir, num2str(patient_number), '\', results_dir,'\', 'PTV_mask.raw'];
+fnameout =  [base_dir, sprintf('%02d',patient_number), '\', results_dir,'\', 'PTV_mask.raw'];
 fid = fopen(fnameout,'r');
 PTV_mask = fread(fid,'uint8');
 PTV_mask = reshape(PTV_mask, size(I));
@@ -92,7 +92,7 @@ fclose(fid);
 
 %% Display
 h=figure(1)
-for iter = 1:144
+for iter = 45:90
         
     % Display image slice
     figure(1);

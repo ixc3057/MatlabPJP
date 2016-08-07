@@ -1,4 +1,4 @@
-function [contourmask, PixelSpacing, SliceThickness] = MakeMask(indir, ROI_name_full, num_slices_PTV, epsilon)
+function [contourmask, PixelSpacing, SliceThickness] = MakeMask(indir, ROI_name_full, num_slices_PTV, epsilon, PTV_name)
 
 %% Load MRI
 [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);
@@ -16,7 +16,7 @@ dd=dir([indir '\RTS*.dcm']);
 dinfo=dicominfo([indir '\' dd.name]);
 
 %% Get structure parameters
-[ROIidx, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, ROI_name_full);
+[ROIidx, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, ROI_name_full, PTV_name);
 PTV_min_z = PTV_min_z - num_slices_PTV*SliceThickness - epsilon;
 PTV_max_z = PTV_max_z + num_slices_PTV*SliceThickness + epsilon;
 
@@ -69,6 +69,12 @@ for i = tmpidx
     z_up = zcoors(i) - epsilon;
     z_down = zcoors(i) + epsilon;
     sliceidx = find(I_z_ind>z_up & I_z_ind<z_down);
+    
+    %Hack, report only the first sliceidx if there are duplicates.
+    if (length(sliceidx) > 1)
+        disp(['ERROR: more than one slice found for z-location: ', num2str(I_z_ind)]);
+        sliceidx = sliceidx(1);
+    end
     
     if isempty(sliceidx)
         disp(['Error: cannot find a slice for this coordinate: ' num2str(zcoors(i))]);

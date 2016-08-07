@@ -1,4 +1,4 @@
-function [roi_num_int, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, roi_of_interest)
+function [roi_num_int, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, roi_of_interest, PTV_name)
 
 dd=dir([indir '\RTS*.dcm']);
 dinfo=dicominfo([indir '\' dd.name]);
@@ -16,7 +16,7 @@ for i=1:roi_num
         roi_name_int = roi_names{i,1};
     end
     % If this is PTV, load points
-    if strcmp(cell2mat(roi_names(i,1)), 'PTV')
+    if strcmp(cell2mat(roi_names(i,1)), PTV_name)
     % if regexp(roi_name_str, regexptranslate('wildcard', 'PTV*'))
         for ii = 1:numel(fieldnames(eval(['dinfo.ROIContourSequence.Item_' num2str(i) '.ContourSequence'])))
             seg_contour_PTV = [ seg_contour_PTV; eval(['dinfo.ROIContourSequence.Item_' num2str(i) '.ContourSequence.Item_' num2str(ii) '.ContourData']) ];

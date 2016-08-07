@@ -2,21 +2,22 @@ clear, clc, close all, format compact
 
 %% Inputs
 % Patient number
-patient_number = 5;
+patient_number = 6;
 % Fraction numbers to compare to each other
-fraction_number = 2;
+fraction_number = 11;
 % Number of slices above and below PTV to truncate
 num_slices_PTV = 5;
 
 % Structure of interest
-ROI_name = 'DUODENUM';
+PTV_name = 'PTV_4500';
+ROI_name = 'SMALLBOWEL';
 ROI_name_full = [ROI_name, '_FX', num2str(fraction_number)];
 %ROI_name = 'Skin';
 %ROI_name_full = ROI_name;
 
 epsilon = 1e-3;
 
-indir = ['C:\Users\ichen\Documents\data-anon-matlab\Patient_0', num2str(patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
+indir = ['C:\Users\ichen\Documents\data_anon\Patient_', sprintf('%02d',patient_number) '\Abdomen_SB_Fx', num2str(fraction_number),'_Delivery']
 
 %% Load MRI file
 [I, PixelSpacing, SliceThickness, ImagePositionPatient, ImageOrientationPatient, ImgSize] = load_VR_MRI(indir);
@@ -32,31 +33,35 @@ ImagePositionPatient = ImagePositionPatient(end,:);
 dd=dir([indir '\RTS*.dcm']);
 dinfo=dicominfo([indir '\' dd.name]);
 
-[ROIidx, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, ROI_name_full);
+
+% Get the structure names from the dicom file
+numROIs = numel(fieldnames(dinfo.StructureSetROISequence));  % Number of contours
+ROIidx = -1;
+for i=1:numROIs
+    roi_names{i,1}= eval(['dinfo.StructureSetROISequence.Item_' num2str(i) '.ROIName']);
+    roi_name_str = cell2mat(roi_names(i));
+    
+    % If this is the structure of interest, return item #
+    if strcmp(cell2mat(roi_names(i,1)), ROI_name_full)
+        ROIidx = i;
+    end
+end
+disp(roi_names)
+
+if ROIidx == -1
+    disp(['Error, cannot find structure.']);
+    return
+end
+
+[ROIidx, roi_name_int, PTV_min_z, PTV_max_z] = StructureExamine (indir, ROI_name_full, PTV_name);
 
 
 PTV_min_z = PTV_min_z - num_slices_PTV*SliceThickness - epsilon;
 PTV_max_z = PTV_max_z + num_slices_PTV*SliceThickness + epsilon;
 
 
-% % Get the structure names from the dicom file
-% numROIs = numel(fieldnames(dinfo.StructureSetROISequence));  % Number of contours
-% 
-% ROIidx = -1;
-% for i=1:numROIs
-%     roi_names{i,1}= eval(['dinfo.StructureSetROISequence.Item_' num2str(i) '.ROIName']);
-%     roi_name_str = cell2mat(roi_names(i));
-%     
-%     % If this is the structure of interest, return item #
-%     if strcmp(cell2mat(roi_names(i,1)), ROI_name_full)
-%         ROIidx = i;
-%     end
-% end
-% 
-% if ROIidx == -1
-%     disp(['Error, cannot find structure.']);
-%     return
-% end
+
+
 
 % Get the contour data
 numContours = numel(fieldnames(eval(['dinfo.ROIContourSequence.Item_' num2str(ROIidx) '.ContourSequence'])));
